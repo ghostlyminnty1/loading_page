@@ -1,4 +1,5 @@
 # loading_page
+Please View in code to understand stracture of how to place each items
 !!The code should be in "ReplicatedFirst"
 
 A loading screen for roblox game, This one focus on actual loading screen not main menu
