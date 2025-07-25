@@ -1,0 +1,97 @@
+--Main code for loading
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local contentProvider = game:GetService("ContentProvider")
+local ts = game:GetService("TweenService")
+local loadingScreenUI = script:WaitForChild("LoadingScreen"):Clone()
+--Up here is to call all items
+
+local mainmenu = playerGui:WaitForChild("Mainmenu")
+if mainmenu then
+	mainmenu.Enabled = false 
+end
+
+
+loadingScreenUI.Parent = playerGui
+
+repeat task.wait() until game:IsLoaded()
+
+local backgroundFrame = loadingScreenUI:WaitForChild("background")
+
+local totalAssetsValue = Instance.new("NumberValue")
+totalAssetsValue.Name = "TotalAssets"
+totalAssetsValue.Parent = backgroundFrame
+
+local loadedAssetsValue = Instance.new("NumberValue")
+loadedAssetsValue.Name = "LoadedAssets"
+loadedAssetsValue.Parent = backgroundFrame
+
+--loading assets
+local function beginLoad()
+	local gameAssets = game:GetDescendants()
+	local totalAssets = #gameAssets
+
+	totalAssetsValue.Value = totalAssets
+	loadedAssetsValue.Value = 0
+
+	local textLabel = backgroundFrame:WaitForChild("TextLabel")
+	textLabel.Text = "0/" .. totalAssets .. " "
+
+
+	for i = 1, totalAssets do
+		local v = gameAssets[i]
+		contentProvider:PreloadAsync({v})
+		textLabel.Text = " " .. i .. "/" .. totalAssets .. " "
+		loadedAssetsValue.Value = i
+		if i % 2 == 0 then --higher the i percent the faster it is but might freeze to some devices
+			task.wait()
+		end
+	end
+
+	textLabel.Text = " " .. totalAssets .. "/" .. totalAssets .. " "
+end
+
+ts:Create(backgroundFrame, TweenInfo.new(2), {BackgroundColor3 = Color3.fromRGB(7, 8, 11)}):Play()
+
+task.wait(1)
+beginLoad() 
+
+
+task.wait(0.5)
+
+--fade out animations
+local colorOutAnim = ts:Create(backgroundFrame, TweenInfo.new(2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)})
+local fadeOutAnim = ts:Create(backgroundFrame, TweenInfo.new(2), {BackgroundTransparency = 1})
+
+
+colorOutAnim:Play()
+colorOutAnim.Completed:Wait()
+
+--destroy things in loading screen
+if loadingScreenUI.background:FindFirstChild("Bar") then
+	loadingScreenUI.background.Bar:Destroy()
+end
+
+if loadingScreenUI.background:FindFirstChild("TextLabel") then
+	loadingScreenUI.background.TextLabel:Destroy()
+end
+
+if loadingScreenUI.background:FindFirstChild("TextLabelTips") then
+	loadingScreenUI.background.TextLabelTips:Destroy()
+end
+
+if loadingScreenUI.background:FindFirstChild("ImageLabel") then
+	loadingScreenUI.background.ImageLabel:Destroy()
+end
+
+fadeOutAnim:Play()
+fadeOutAnim.Completed:Wait()
+
+
+loadingScreenUI:Destroy()
+
+
+if mainmenu then
+	mainmenu.Enabled = true
+end
