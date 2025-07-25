@@ -1,0 +1,28 @@
+--Dont need to add if you dont use TextLabelTips
+
+local textLabel = script.Parent
+
+local Tips = {
+	"Skipping still in development so, hear those tips.";
+	"This game is recommented at graphic 5+";
+	"Feel free to roleplay here as however you want.";
+	"wait for it to fully load for less lag in area with high assets.";
+	"For less lagging, try turn off the diffu.";
+	"They said in this town there a secret room, but where?";
+	"This game was created by oneself, so.. there surely has some bug.";
+	"Did you know? no, just joking.";
+	"MHS school has been open for more than 90 years!";
+	"There someone who selling coffee in secret area, can you find him?";
+	"bah";
+}
+--Free to changes to tips and add however u want just use "...";
+--and to change text from up here just fix message within ".."
+
+-- cycle through the tips
+while true do
+	for i, tip in Tips do
+		textLabel.Text = tip
+		task.wait(5) --wait for ... secs before tips changes
+	end
+end
+
