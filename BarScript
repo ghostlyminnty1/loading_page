@@ -1,0 +1,42 @@
+--LocalScript
+
+local bar = script.Parent 
+local background = script.Parent.Parent.Parent 
+local textLabel = background:WaitForChild("TextLabel")
+
+local totalAssetsValue = background:WaitForChild("TotalAssets")
+local loadedAssetsValue = background:WaitForChild("LoadedAssets")
+
+
+bar.AnchorPoint = Vector2.new(0, 0) -- Start from the left corner
+bar.Position = UDim2.new(0, 0, 0, 0) -- Align w/ background frame
+bar.Size = UDim2.new(0, 0, 1, 0) -- Initially, width is 0, height is 100% of parent
+
+local function updateBar()
+	local loaded = loadedAssetsValue.Value
+	local total = totalAssetsValue.Value
+
+	local progress = 0
+	if total > 0 then
+		progress = loaded / total
+	else
+		progress = 0.2 -- depending on desired behavior
+	end
+
+	-- Clamp progress between 0 and 1
+	progress = math.clamp(progress, 0, 1)
+
+	local ts = game:GetService("TweenService")
+
+	local goal = {}
+	goal.Size = UDim2.new(progress, 0, 1, 0)
+
+	ts:Create(bar, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal):Play()
+
+	
+	textLabel.Text = tostring(loaded) .. "/" .. tostring(total)
+end
+
+updateBar()
+
+loadedAssetsValue.Changed:Connect(updateBar)
